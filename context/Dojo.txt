@@ -1,0 +1,256 @@
+Ven y yo.
+A
+
+Andrés Felipe Muñeton Lopera
+0 minutos 5 segundos0:05
+Andrés Felipe Muñeton Lopera 0 minutos 5 segundos
+Listo, no, sí, dale.
+J
+
+Juan Gabriel Colorado Restrepo
+0 minutos 6 segundos0:06
+Juan Gabriel Colorado Restrepo 0 minutos 6 segundos
+A.
+Juan Gabriel Colorado Restrepo 0 minutos 7 segundos
+¿Camioneta comentarte que Santiago López, conoces a Santiago López?
+A
+
+Andrés Felipe Muñeton Lopera
+0 minutos 12 segundos0:12
+Andrés Felipe Muñeton Lopera 0 minutos 12 segundos
+Yeah, the Instagram.
+J
+
+Juan Gabriel Colorado Restrepo
+0 minutos 14 segundos0:14
+Juan Gabriel Colorado Restrepo 0 minutos 14 segundos
+Sí, él también me hizo una solicitud ahí para bloquear unos usuarios y ya, pero me gustaría pasarla por los agentes que estamos haciendo a ver qué solución me da, sería muy interesante.
+A
+
+Andrés Felipe Muñeton Lopera
+0 minutos 17 segundos0:17
+Andrés Felipe Muñeton Lopera 0 minutos 17 segundos
+Hmm.
+Andrés Felipe Muñeton Lopera 0 minutos 19 segundos
+sí.
+Andrés Felipe Muñeton Lopera 0 minutos 27 segundos
+qué bien. Uy, qué bacano me contás. Sí, él ha estado muy embalado con eso.
+J
+
+Juan Gabriel Colorado Restrepo
+0 minutos 31 segundos0:31
+Juan Gabriel Colorado Restrepo 0 minutos 31 segundos
+Sí.
+Andrés Felipe Muñeton Lopera 12 minutos 9 segundos
+G.
+Andrés Felipe Muñeton Lopera 12 minutos 12 segundos
+Así es, así es, nah yeah.
+J
+Juan Gabriel Colorado Restrepo
+12 minutos 12 segundos12:12
+Juan Gabriel Colorado Restrepo 12 minutos 12 segundos
+Y no hizo ni nada de validaciones y luego empezamos a validar ta ta ta ta y así ta ta ta y luego voy a consultar una API para que valide si en el API está el do el documento, por ejemplo.
+A
+Andrés Felipe Muñeton Lopera
+12 minutos 16 segundos12:16
+Andrés Felipe Muñeton Lopera 12 minutos 16 segundos
+A balear, sí, incluso al inicio.
+Andrés Felipe Muñeton Lopera 12 minutos 26 segundos
+Epa, epa, sí, cosas así. Ya uno ya mirará. Yo no sé nada de esos sistemas, pero yo no sé si uno puede validar si la factura es legal con alguna entidad, ¿cierto? No sé, pero podemos simular muchas cosas. Lo que vea es que alcance y si no alcanzamos a hacer todos los personas, no importa porque la gente vea.
+J
+Juan Gabriel Colorado Restrepo
+12 minutos 28 segundos12:28
+Juan Gabriel Colorado Restrepo 12 minutos 28 segundos
+List, list, list, list.
+Juan Gabriel Colorado Restrepo 12 minutos 39 segundos
+Mm.
+A
+Andrés Felipe Muñeton Lopera
+12 minutos 46 segundos12:46
+Andrés Felipe Muñeton Lopera 12 minutos 46 segundos
+Y muy bacano si se les puede compartir el código.
+J
+Juan Gabriel Colorado Restrepo
+12 minutos 47 segundos12:47
+Juan Gabriel Colorado Restrepo 12 minutos 47 segundos
+No, pero si lo llevamos bien preparadito, lo hacemos completos. Pereira, hágale, hágale.
+A
+Andrés Felipe Muñeton Lopera
+12 minutos 51 segundos12:51
+Andrés Felipe Muñeton Lopera 12 minutos 51 segundos
+Listo, pero importantísimo, y esto es clave, clave, clave, no complejizar, no complejizar.
+J
+Juan Gabriel Colorado Restrepo
+12 minutos 58 segundos12:58
+Juan Gabriel Colorado Restrepo 12 minutos 58 segundos
+Ajá, y usted me escribe si le estoy complejizando la cosa.
+A
+Andrés Felipe Muñeton Lopera
+12 minutos 59 segundos12:59
+Andrés Felipe Muñeton Lopera 12 minutos 59 segundos
+Listo, in momentum.
+Andrés Felipe Muñeton Lopera 13 minutos 2 segundos
+Y nuevamente, porque es que complejizar es pasa lo siguiente, yo lo que quiero es que ellos vean que yo escribo y se genera código, eso es lo que yo quiero. Pero si yo les llevo una arquitectura súper avanzada, como todos son líderes técnicos, van a empezar a decirte, Gaby, aquí porque hiciste eso en la arquitectura.
+Andrés Felipe Muñeton Lopera 13 minutos 21 segundos
+y nos quedamos la hora entera hablando de arquitectura y nunca generamos no no aquí aquí es más sin aquí sin nada Eso es nada yo aquí estoy haciendo como si fuera como si estuviera un hola mundo y ahí después ya le vamos a meter más cositas de cómo específico la arquitectura Cómo hago es nada aquí es yo escribo casi que un by
+J
+Juan Gabriel Colorado Restrepo
+13 minutos 22 segundos13:22
+Juan Gabriel Colorado Restrepo 13 minutos 22 segundos
+sí.
+Juan Gabriel Colorado Restrepo 13 minutos 30 segundos
+Leves.
+Juan Gabriel Colorado Restrepo 13 minutos 34 segundos
+Mhm.
+A
+Andrés Felipe Muñeton Lopera
+13 minutos 41 segundos13:41
+Andrés Felipe Muñeton Lopera 13 minutos 41 segundos
+Coding, pero un buy coding serio, un buy coding con specs, un buy coding donde yo tengo criterio, donde yo voy a ir evolucionando. Entonces, ahora sí, listo.
+J
+Juan Gabriel Colorado Restrepo
+13 minutos 52 segundos13:52
+Juan Gabriel Colorado Restrepo 13 minutos 52 segundos
+Listo de una, ajá, entendido, entendido.
+A
+Andrés Felipe Muñeton Lopera
+13 minutos 53 segundos13:53
+Andrés Felipe Muñeton Lopera 13 minutos 53 segundos
+Listo de una, entonces invito invito para el viernes.
+J
+Juan Gabriel Colorado Restrepo
+13 minutos 57 segundos13:57
+Juan Gabriel Colorado Restrepo 13 minutos 57 segundos
+Sí, para el viernes la sacamos.
+A
+Andrés Felipe Muñeton Lopera
+13 minutos 58 segundos13:58
+Andrés Felipe Muñeton Lopera 13 minutos 58 segundos
+45.
+J
+Juan Gabriel Colorado Restrepo
+14 minutos 1 segundo14:01
+Juan Gabriel Colorado Restrepo 14 minutos 1 segundo
+Cuatro a 5 listo.
+A
+Andrés Felipe Muñeton Lopera
+14 minutos 2 segundos14:02
+Andrés Felipe Muñeton Lopera 14 minutos 2 segundos
+Va a poner cuatro, 5:30 por si acaso, pero pensamos que va a ser de 1 hora. ¿Te parece? Listo, sí, no se volvió muy cansón porque a mí me gustaría que empezáramos a hacer dojos semanales. Sí, dojos semanales, listo. Bueno, pregunta Don Gao, invito a todos los olvers.
+J
+Juan Gabriel Colorado Restrepo
+14 minutos 6 segundos14:06
+Juan Gabriel Colorado Restrepo 14 minutos 6 segundos
+De 1 hora, sí, tratemos de hacerlo de 1 hora para que no ocupemos eso y no ocupemos mucho los muchachos.
+Juan Gabriel Colorado Restrepo 14 minutos 16 segundos
+claro, Andrés.
+A
+Andrés Felipe Muñeton Lopera
+14 minutos 23 segundos14:23
+Andrés Felipe Muñeton Lopera 14 minutos 23 segundos
+El que se quiera conectar.
+J
+Juan Gabriel Colorado Restrepo
+14 minutos 25 segundos14:25
+Juan Gabriel Colorado Restrepo 14 minutos 25 segundos
+El que se quiera conectar, sí, pero sí mejor que sean.
+A
+Andrés Felipe Muñeton Lopera
+14 minutos 27 segundos14:27
+Andrés Felipe Muñeton Lopera 14 minutos 27 segundos
+Listo, de una.
+J
+Juan Gabriel Colorado Restrepo
+14 minutos 30 segundos14:30
+Juan Gabriel Colorado Restrepo 14 minutos 30 segundos
+Pues que sean de desarrollo, cierto, no evitemos.
+A
+Andrés Felipe Muñeton Lopera
+14 minutos 32 segundos14:32
+Andrés Felipe Muñeton Lopera 14 minutos 32 segundos
+sí, solo jack, solo jack, sí, solo jack.
+J
+Juan Gabriel Colorado Restrepo
+14 minutos 34 segundos14:34
+Juan Gabriel Colorado Restrepo 14 minutos 34 segundos
+Sí, eso sí, porque los otros se van a perder ahí.
+A
+Andrés Felipe Muñeton Lopera
+14 minutos 38 segundos14:38
+Andrés Felipe Muñeton Lopera 14 minutos 38 segundos
+Van a ir y se van a empezar a desconectar.
+J
+Juan Gabriel Colorado Restrepo
+14 minutos 40 segundos14:40
+Juan Gabriel Colorado Restrepo 14 minutos 40 segundos
+Ajá, exacto, listo, listo de una.
+A
+Andrés Felipe Muñeton Lopera
+14 minutos 42 segundos14:42
+Andrés Felipe Muñeton Lopera 14 minutos 42 segundos
+Listo, listo don Gao. Entonces, si quieres, no sé, si quieres, si hoy avanzas en esto.
+Andrés Felipe Muñeton Lopera 14 minutos 50 segundos
+Eso, bueno, eso es prioritario, cierto, pues porque es prioritario, porque parte de nuestro objetivo es hacer transferencia de conocimiento. Sí, entonces es prioritario. Entonces no sé si de pronto al final del día, tipo 5, si tenés tiempito, nos sentamos y miramos que qué has avanzado.
+J
+Juan Gabriel Colorado Restrepo
+14 minutos 59 segundos14:59
+Juan Gabriel Colorado Restrepo 14 minutos 59 segundos
+Ajá, totalmente de acuerdo.
+Juan Gabriel Colorado Restrepo 15 minutos 11 segundos
+El avance, listo, hoy a las 5:15 minutos.
+A
+Andrés Felipe Muñeton Lopera
+15 minutos 12 segundos15:12
+Andrés Felipe Muñeton Lopera 15 minutos 12 segundos
+Sí, listo, no es no es como por un monitoreo así, no es para llover por antojado. Listo, entonces Dios me decís, no, hoy no tengo tiempito, mañana lo vemos, listo.
+J
+Juan Gabriel Colorado Restrepo
+15 minutos 27 segundos15:27
+Juan Gabriel Colorado Restrepo 15 minutos 27 segundos
+No, Andrés, y a mí me gusta que me exijan así también porque yo ya voy a tengo que llegar con algo a la reunión.
+A
+Andrés Felipe Muñeton Lopera
+15 minutos 33 segundos15:33
+Andrés Felipe Muñeton Lopera 15 minutos 33 segundos
+Okay.
+Andrés Felipe Muñeton Lopera 15 minutos 36 segundos
+Listo, bueno.
+J
+Juan Gabriel Colorado Restrepo
+15 minutos 36 segundos15:36
+Juan Gabriel Colorado Restrepo 15 minutos 36 segundos
+Que a veces uno le da prioridad a otras cosas y empieza a divagar con lo que realmente es prioritario, no listo, listo.
+A
+Andrés Felipe Muñeton Lopera
+15 minutos 43 segundos15:43
+Andrés Felipe Muñeton Lopera 15 minutos 43 segundos
+Listo, por ahí don Ciro te estaba contando del reto que él tiene, si de pronto le puedes dar también una manita, pero la prioridad es lo que hablamos en esta reunión. Sí, porque don Ciro es muy terso y en Ciro se ha defendido solo con los agentes, pero si de pronto en algún momento tenés un tiempito de mirarle a ver cómo va.
+
+Juan Gabriel Colorado Restrepo
+15 minutos 54 segundos15:54
+Juan Gabriel Colorado Restrepo 15 minutos 54 segundos
+A preparar el dojo. mhm.
+A
+Andrés Felipe Muñeton Lopera
+16 minutos 4 segundos16:04
+Andrés Felipe Muñeton Lopera 16 minutos 4 segundos
+Muy bacano.
+J
+Juan Gabriel Colorado Restrepo
+16 minutos 5 segundos16:05
+Juan Gabriel Colorado Restrepo 16 minutos 5 segundos
+Listo, no, claro, y hacerle una revisión parcero, claro.
+A
+Andrés Felipe Muñeton Lopera
+16 minutos 6 segundos16:06
+Andrés Felipe Muñeton Lopera 16 minutos 6 segundos
+Listo.
+J
+Juan Gabriel Colorado Restrepo
+16 minutos 10 segundos16:10
+Juan Gabriel Colorado Restrepo 16 minutos 10 segundos
+Es una.
+Juan Gabriel Colorado Restrepo 16 minutos 11 segundos
+Ajá.
+Juan Gabriel Colorado Restrepo 16 minutos 13 segundos
+Listo, no, muchísimas gracias a ustedes, así quedamos bien.

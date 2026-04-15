@@ -1,0 +1,15 @@
+# Environment
+.env
+.env.*
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# IDE
+.vscode/
+.idea/
+
+# MCP config (contains local DB credentials)
+.mcp.json
