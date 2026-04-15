@@ -249,19 +249,56 @@ RADICADO → EN_REVISION_DOCUMENTAL → EN_AUDITORIA_MEDICA → EN_VALIDACION_CO
 
 ---
 
+### Paso 14: Repositorio en GitHub
+**Prompt:** "Vamos a conectarnos a un repositorio de github"
+
+**Resultado:**
+- Instalación de GitHub CLI (`gh` v2.89.0) via `winget`
+- Autenticación con `gh auth login` en cuenta `gabocolo`
+- Inicialización de git en el directorio raíz `Dojo/`
+- `.gitignore` creado (excluye `.env`, `__pycache__`, `.mcp.json`, IDEs)
+- Commit inicial con 10 archivos (código, frontend, contexto, documentación)
+- Repositorio público creado: **https://github.com/gabocolo/dojo-reembolsos**
+- Push automático con `gh repo create --source=. --push`
+
+**Archivos creados:** `.gitignore`
+**Comando clave:** `gh repo create gabocolo/dojo-reembolsos --public --source=. --remote=origin --push`
+
+---
+
+### Paso 15: README.md con diagramas
+**Prompt:** "Créame el archivo README.MD con toda la información del proyecto, diagramas mermaid que consideres necesarios"
+
+**Resultado:**
+- `README.md` completo con documentación del proyecto
+- 4 diagramas Mermaid: proceso de negocio, máquina de estados, arquitectura, modelo de datos (ER)
+- Secciones: cálculo del reembolso, reglas de negocio, endpoints API, estructura, datos de prueba, instalación
+- Contexto del dojo de vibe coding de Tech&Solve
+
+**Archivos creados:** `README.md`
+
+---
+
 ## Estructura final del proyecto
 
 ```
-dojo-facturas/
-├── .env                 # ANTHROPIC_API_KEY (no subir al repo)
-├── .mcp.json            # Config MCP para PostgreSQL
-├── database.py          # Conexión PostgreSQL + init_db + seed
-├── main.py              # App FastAPI — 11 endpoints
-├── models.py            # Asegurado, SolicitudReembolso, Reembolso, CambioEstado, HistorialEstado
-├── services.py          # Lógica de negocio + reglas + Claude Vision
-├── requirements.txt     # fastapi, uvicorn, pydantic, anthropic, python-dotenv, python-multipart, psycopg2-binary
-└── static/
-    └── index.html       # Frontend completo con 4 tabs
+Dojo/
+├── .gitignore               # Excluye .env, __pycache__, .mcp.json
+├── CLAUDE.md                # Contexto para Claude Code
+├── README.md                # Documentación completa con diagramas Mermaid
+├── context/
+│   ├── Dojo.txt             # Transcripción original de la planeación
+│   └── historial-desarrollo.md  # Este archivo — pasos progresivos del dojo
+└── dojo-facturas/
+    ├── .env                 # ANTHROPIC_API_KEY (no subir al repo)
+    ├── .mcp.json            # Config MCP para PostgreSQL
+    ├── database.py          # Conexión PostgreSQL + init_db + seed
+    ├── main.py              # App FastAPI — 11 endpoints
+    ├── models.py            # Modelos Pydantic con validadores
+    ├── services.py          # Lógica de negocio + reglas + Claude Vision
+    ├── requirements.txt     # Dependencias Python
+    └── static/
+        └── index.html       # Frontend completo con 4 tabs
 ```
 
 ## Endpoints API
