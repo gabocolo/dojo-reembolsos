@@ -25,18 +25,51 @@ def init_db():
     cur.execute("""
         CREATE TABLE IF NOT EXISTS asegurados (
             id SERIAL PRIMARY KEY,
+            tipo_documento VARCHAR(5) NOT NULL DEFAULT 'CC',
             documento VARCHAR(20) UNIQUE NOT NULL,
             nombre VARCHAR(200) NOT NULL,
+            fecha_nacimiento DATE,
+            genero VARCHAR(10) DEFAULT '',
+            email VARCHAR(200) DEFAULT '',
+            telefono VARCHAR(20) DEFAULT '',
             numero_poliza VARCHAR(50) NOT NULL,
             plan VARCHAR(50) NOT NULL,
-            estado_poliza VARCHAR(20) NOT NULL DEFAULT 'ACTIVA',
+            estado_poliza VARCHAR(30) NOT NULL DEFAULT 'ACTIVA',
+            fecha_inicio_poliza DATE,
+            fecha_fin_poliza DATE,
+            fecha_suspension DATE,
+            periodo_carencia_dias INTEGER NOT NULL DEFAULT 30,
             deducible_anual NUMERIC(15,2) NOT NULL DEFAULT 0,
             deducible_consumido NUMERIC(15,2) NOT NULL DEFAULT 0,
             tope_anual NUMERIC(15,2) NOT NULL DEFAULT 0,
             reembolsado_anual NUMERIC(15,2) NOT NULL DEFAULT 0,
-            copago_porcentaje INTEGER NOT NULL DEFAULT 20
+            copago_porcentaje INTEGER NOT NULL DEFAULT 20,
+            preexistencias TEXT DEFAULT '',
+            motivo_estado TEXT DEFAULT ''
         )
     """)
+
+    # Migrar columnas nuevas si la tabla ya existia
+    nuevas_columnas = [
+        ("tipo_documento", "VARCHAR(5) NOT NULL DEFAULT 'CC'"),
+        ("fecha_nacimiento", "DATE"),
+        ("genero", "VARCHAR(10) DEFAULT ''"),
+        ("email", "VARCHAR(200) DEFAULT ''"),
+        ("telefono", "VARCHAR(20) DEFAULT ''"),
+        ("fecha_inicio_poliza", "DATE"),
+        ("fecha_fin_poliza", "DATE"),
+        ("fecha_suspension", "DATE"),
+        ("periodo_carencia_dias", "INTEGER NOT NULL DEFAULT 30"),
+        ("preexistencias", "TEXT DEFAULT ''"),
+        ("motivo_estado", "TEXT DEFAULT ''"),
+    ]
+    conn.commit()
+    for col, tipo in nuevas_columnas:
+        try:
+            cur.execute(f"ALTER TABLE asegurados ADD COLUMN {col} {tipo}")
+            conn.commit()
+        except Exception:
+            conn.rollback()
 
     # Tabla reembolsos
     cur.execute("""
@@ -92,16 +125,25 @@ def seed_db():
         return
 
     asegurados = [
-        ("1017234567", "María López", "POL-2024-001", "Premium", "ACTIVA", 500000, 0, 50000000, 0, 20),
-        ("1098765432", "Carlos Ruiz", "POL-2024-002", "Básico", "ACTIVA", 1000000, 0, 20000000, 0, 30),
-        ("1045678901", "Ana García", "POL-2024-003", "Plus", "SUSPENDIDA", 750000, 0, 35000000, 0, 25),
+        ("CC", "1017234567", "María López", "1985-03-15", "F", "maria.lopez@email.com", "3001234567",
+         "POL-2024-001", "Premium", "ACTIVA", "2024-01-01", "2025-01-01", None, 30,
+         500000, 0, 50000000, 0, 20, "", ""),
+        ("CC", "1098765432", "Carlos Ruiz", "1990-07-22", "M", "carlos.ruiz@email.com", "3109876543",
+         "POL-2024-002", "Básico", "ACTIVA", "2024-03-01", "2025-03-01", None, 30,
+         1000000, 0, 20000000, 0, 30, "", ""),
+        ("CC", "1045678901", "Ana García", "1978-11-08", "F", "ana.garcia@email.com", "3205678901",
+         "POL-2024-003", "Plus", "SUSPENDIDA", "2024-02-01", "2025-02-01", "2024-10-15", 30,
+         750000, 0, 35000000, 0, 25, "", "No pago de prima - mora > 30 dias"),
     ]
 
     for a in asegurados:
         cur.execute("""
-            INSERT INTO asegurados (documento, nombre, numero_poliza, plan, estado_poliza,
-                deducible_anual, deducible_consumido, tope_anual, reembolsado_anual, copago_porcentaje)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            INSERT INTO asegurados (tipo_documento, documento, nombre, fecha_nacimiento, genero,
+                email, telefono, numero_poliza, plan, estado_poliza, fecha_inicio_poliza,
+                fecha_fin_poliza, fecha_suspension, periodo_carencia_dias,
+                deducible_anual, deducible_consumido, tope_anual, reembolsado_anual,
+                copago_porcentaje, preexistencias, motivo_estado)
+            VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
         """, a)
 
     conn.commit()

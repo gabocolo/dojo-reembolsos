@@ -4,7 +4,7 @@ import base64
 from datetime import datetime, date
 import anthropic
 from dotenv import load_dotenv
-from models import SolicitudReembolso, Reembolso, Asegurado, HistorialEstado
+from models import SolicitudReembolso, Reembolso, Asegurado, HistorialEstado, CrearAsegurado, EditarAsegurado
 from database import get_connection
 
 load_dotenv()
@@ -20,6 +20,13 @@ TRANSICIONES = {
 }
 
 PLAZO_RADICACION_DIAS = 30
+
+# Transiciones válidas de estado de póliza
+TRANSICIONES_POLIZA = {
+    "PENDIENTE_ACTIVACION": ["ACTIVA", "CANCELADA"],
+    "ACTIVA": ["SUSPENDIDA", "CANCELADA"],
+    "SUSPENDIDA": ["ACTIVA", "CANCELADA"],
+}
 
 
 def _row_to_reembolso(row) -> Reembolso:
@@ -42,19 +49,37 @@ def _row_to_reembolso(row) -> Reembolso:
     )
 
 
+ASEGURADO_COLUMNS = """id, tipo_documento, documento, nombre, fecha_nacimiento, genero,
+    email, telefono, numero_poliza, plan, estado_poliza, fecha_inicio_poliza,
+    fecha_fin_poliza, fecha_suspension, periodo_carencia_dias,
+    deducible_anual, deducible_consumido, tope_anual, reembolsado_anual,
+    copago_porcentaje, preexistencias, motivo_estado"""
+
+
 def _row_to_asegurado(row) -> Asegurado:
     return Asegurado(
         id=row[0],
-        documento=row[1],
-        nombre=row[2],
-        numero_poliza=row[3],
-        plan=row[4],
-        estado_poliza=row[5],
-        deducible_anual=float(row[6]),
-        deducible_consumido=float(row[7]),
-        tope_anual=float(row[8]),
-        reembolsado_anual=float(row[9]),
-        copago_porcentaje=row[10],
+        tipo_documento=row[1] or "CC",
+        documento=row[2],
+        nombre=row[3],
+        fecha_nacimiento=row[4],
+        genero=row[5] or "",
+        email=row[6] or "",
+        telefono=row[7] or "",
+        numero_poliza=row[8],
+        plan=row[9],
+        estado_poliza=row[10],
+        fecha_inicio_poliza=row[11],
+        fecha_fin_poliza=row[12],
+        fecha_suspension=row[13],
+        periodo_carencia_dias=row[14] or 30,
+        deducible_anual=float(row[15] or 0),
+        deducible_consumido=float(row[16] or 0),
+        tope_anual=float(row[17] or 0),
+        reembolsado_anual=float(row[18] or 0),
+        copago_porcentaje=row[19] or 20,
+        preexistencias=row[20] or "",
+        motivo_estado=row[21] or "",
     )
 
 
@@ -71,7 +96,7 @@ def _registrar_historial(cur, reembolso_id: str, estado_anterior: str, estado_nu
 def buscar_asegurado(documento: str) -> Asegurado | None:
     conn = get_connection()
     cur = conn.cursor()
-    cur.execute("SELECT * FROM asegurados WHERE documento = %s", (documento,))
+    cur.execute(f"SELECT {ASEGURADO_COLUMNS} FROM asegurados WHERE documento = %s", (documento,))
     row = cur.fetchone()
     cur.close()
     conn.close()
@@ -81,11 +106,188 @@ def buscar_asegurado(documento: str) -> Asegurado | None:
 def listar_asegurados() -> list[Asegurado]:
     conn = get_connection()
     cur = conn.cursor()
-    cur.execute("SELECT * FROM asegurados ORDER BY nombre")
+    cur.execute(f"SELECT {ASEGURADO_COLUMNS} FROM asegurados ORDER BY nombre")
     rows = cur.fetchall()
     cur.close()
     conn.close()
     return [_row_to_asegurado(r) for r in rows]
+
+
+def crear_asegurado(datos: CrearAsegurado) -> Asegurado:
+    conn = get_connection()
+    cur = conn.cursor()
+
+    # Verificar duplicado
+    cur.execute("SELECT 1 FROM asegurados WHERE documento = %s", (datos.documento,))
+    if cur.fetchone():
+        cur.close()
+        conn.close()
+        raise ValueError(f"Ya existe un asegurado con documento {datos.documento}")
+
+    # Verificar póliza duplicada
+    cur.execute("SELECT 1 FROM asegurados WHERE numero_poliza = %s", (datos.numero_poliza,))
+    if cur.fetchone():
+        cur.close()
+        conn.close()
+        raise ValueError(f"Ya existe una póliza con número {datos.numero_poliza}")
+
+    estado_inicial = "ACTIVA" if datos.fecha_inicio_poliza and datos.fecha_inicio_poliza <= date.today() else "PENDIENTE_ACTIVACION"
+
+    cur.execute(
+        f"""INSERT INTO asegurados (tipo_documento, documento, nombre, fecha_nacimiento, genero,
+            email, telefono, numero_poliza, plan, estado_poliza, fecha_inicio_poliza,
+            fecha_fin_poliza, periodo_carencia_dias, deducible_anual, deducible_consumido,
+            tope_anual, reembolsado_anual, copago_porcentaje, preexistencias, motivo_estado)
+           VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,0,%s,0,%s,%s,'')
+           RETURNING {ASEGURADO_COLUMNS}""",
+        (datos.tipo_documento, datos.documento, datos.nombre, datos.fecha_nacimiento,
+         datos.genero, datos.email, datos.telefono, datos.numero_poliza, datos.plan,
+         estado_inicial, datos.fecha_inicio_poliza, datos.fecha_fin_poliza,
+         datos.periodo_carencia_dias, datos.deducible_anual, datos.tope_anual,
+         datos.copago_porcentaje, datos.preexistencias),
+    )
+    row = cur.fetchone()
+    conn.commit()
+    cur.close()
+    conn.close()
+    return _row_to_asegurado(row)
+
+
+def editar_asegurado(documento: str, datos: EditarAsegurado) -> Asegurado:
+    asegurado = buscar_asegurado(documento)
+    if not asegurado:
+        raise KeyError(f"No se encontró asegurado con documento {documento}")
+
+    campos = []
+    valores = []
+
+    if datos.nombre is not None:
+        campos.append("nombre = %s")
+        valores.append(datos.nombre)
+    if datos.email is not None:
+        campos.append("email = %s")
+        valores.append(datos.email)
+    if datos.telefono is not None:
+        campos.append("telefono = %s")
+        valores.append(datos.telefono)
+    if datos.plan is not None:
+        campos.append("plan = %s")
+        valores.append(datos.plan)
+    if datos.fecha_fin_poliza is not None:
+        campos.append("fecha_fin_poliza = %s")
+        valores.append(datos.fecha_fin_poliza)
+    if datos.preexistencias is not None:
+        campos.append("preexistencias = %s")
+        valores.append(datos.preexistencias)
+    if datos.deducible_anual is not None:
+        if datos.deducible_anual < asegurado.deducible_consumido:
+            raise ValueError(f"No se puede bajar el deducible anual por debajo de lo ya consumido (${asegurado.deducible_consumido:,.0f})")
+        campos.append("deducible_anual = %s")
+        valores.append(datos.deducible_anual)
+    if datos.tope_anual is not None:
+        if datos.tope_anual < asegurado.reembolsado_anual:
+            raise ValueError(f"No se puede bajar el tope anual por debajo de lo ya reembolsado (${asegurado.reembolsado_anual:,.0f})")
+        campos.append("tope_anual = %s")
+        valores.append(datos.tope_anual)
+    if datos.copago_porcentaje is not None:
+        if datos.copago_porcentaje < 0 or datos.copago_porcentaje > 30:
+            raise ValueError("El copago debe estar entre 0% y 30%")
+        campos.append("copago_porcentaje = %s")
+        valores.append(datos.copago_porcentaje)
+
+    if not campos:
+        return asegurado
+
+    valores.append(documento)
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute(f"UPDATE asegurados SET {', '.join(campos)} WHERE documento = %s RETURNING {ASEGURADO_COLUMNS}", valores)
+    row = cur.fetchone()
+    conn.commit()
+    cur.close()
+    conn.close()
+    return _row_to_asegurado(row)
+
+
+def cambiar_estado_poliza(documento: str, nuevo_estado: str, motivo: str = "") -> Asegurado:
+    asegurado = buscar_asegurado(documento)
+    if not asegurado:
+        raise KeyError(f"No se encontró asegurado con documento {documento}")
+
+    estado_actual = asegurado.estado_poliza
+    permitidos = TRANSICIONES_POLIZA.get(estado_actual, [])
+
+    if nuevo_estado not in permitidos:
+        raise ValueError(f"No se puede pasar de {estado_actual} a {nuevo_estado}. Transiciones válidas: {', '.join(permitidos) if permitidos else 'ninguna (estado final)'}")
+
+    conn = get_connection()
+    cur = conn.cursor()
+
+    extras = {"estado_poliza": nuevo_estado, "motivo_estado": motivo}
+
+    if nuevo_estado == "SUSPENDIDA":
+        if not motivo:
+            cur.close()
+            conn.close()
+            raise ValueError("Debe indicar el motivo de la suspensión")
+        extras["fecha_suspension"] = date.today()
+
+    elif nuevo_estado == "ACTIVA" and estado_actual == "SUSPENDIDA":
+        # Reactivación
+        extras["fecha_suspension"] = None
+        # Si estuvo suspendida > 90 días, resetear contadores
+        if asegurado.fecha_suspension:
+            dias_suspendida = (date.today() - asegurado.fecha_suspension).days
+            if dias_suspendida > 90:
+                extras["deducible_consumido"] = 0
+                extras["reembolsado_anual"] = 0
+
+    elif nuevo_estado == "CANCELADA":
+        if not motivo:
+            cur.close()
+            conn.close()
+            raise ValueError("Debe indicar el motivo de la cancelación")
+        # Verificar reembolsos pendientes
+        cur.execute(
+            "SELECT COUNT(*) FROM reembolsos WHERE documento_asegurado = %s AND estado IN ('RADICADO','EN_REVISION_DOCUMENTAL','EN_AUDITORIA_MEDICA','EN_VALIDACION_COBERTURA')",
+            (documento,)
+        )
+        pendientes = cur.fetchone()[0]
+        if pendientes > 0:
+            cur.close()
+            conn.close()
+            raise ValueError(f"No se puede cancelar: hay {pendientes} reembolso(s) en trámite. Resuélvalos primero.")
+
+    set_clause = ", ".join(f"{k} = %s" for k in extras)
+    valores = list(extras.values()) + [documento]
+    cur.execute(f"UPDATE asegurados SET {set_clause} WHERE documento = %s RETURNING {ASEGURADO_COLUMNS}", valores)
+    row = cur.fetchone()
+    conn.commit()
+    cur.close()
+    conn.close()
+    return _row_to_asegurado(row)
+
+
+def eliminar_asegurado(documento: str):
+    asegurado = buscar_asegurado(documento)
+    if not asegurado:
+        raise KeyError(f"No se encontró asegurado con documento {documento}")
+
+    conn = get_connection()
+    cur = conn.cursor()
+
+    # Verificar que no tenga reembolsos
+    cur.execute("SELECT COUNT(*) FROM reembolsos WHERE documento_asegurado = %s", (documento,))
+    count = cur.fetchone()[0]
+    if count > 0:
+        cur.close()
+        conn.close()
+        raise ValueError(f"No se puede eliminar: el asegurado tiene {count} reembolso(s) asociados")
+
+    cur.execute("DELETE FROM asegurados WHERE documento = %s", (documento,))
+    conn.commit()
+    cur.close()
+    conn.close()
 
 
 # === RADICAR REEMBOLSO ===
@@ -334,7 +536,8 @@ def extraer_datos_factura(image_bytes: bytes, media_type: str) -> dict:
                         "type": "text",
                         "text": (
                             "Extrae los datos de esta factura médica y responde SOLO con un JSON válido, sin markdown:\n"
-                            '{"numero_factura":"...","nit_prestador":"...","nombre_prestador":"...","tipo_servicio":"...","diagnostico_descripcion":"...","valor_factura":0}\n'
+                            '{"numero_factura":"...","documento_paciente":"...","nit_prestador":"...","nombre_prestador":"...","tipo_servicio":"...","diagnostico_descripcion":"...","valor_factura":0}\n'
+                            "- documento_paciente: solo los dígitos de la cédula o documento del paciente (sin CC, sin puntos)\n"
                             "- tipo_servicio: uno de CONSULTA, LABORATORIO, MEDICAMENTOS, HOSPITALIZACION, CIRUGIA\n"
                             "- nit_prestador: solo dígitos, 9-10 caracteres\n"
                             "- valor_factura: número sin símbolos\n"
@@ -347,4 +550,10 @@ def extraer_datos_factura(image_bytes: bytes, media_type: str) -> dict:
     )
 
     raw = response.content[0].text.strip()
+    # Limpiar markdown si Claude responde con ```json ... ```
+    if raw.startswith("```"):
+        raw = raw.split("\n", 1)[1] if "\n" in raw else raw[3:]
+        if raw.endswith("```"):
+            raw = raw[:-3]
+        raw = raw.strip()
     return json.loads(raw)

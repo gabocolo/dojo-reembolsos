@@ -2,10 +2,14 @@ from pathlib import Path
 from fastapi import FastAPI, HTTPException, UploadFile, File, Query
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
-from models import SolicitudReembolso, Reembolso, CambioEstado, Asegurado, HistorialEstado
+from models import (
+    SolicitudReembolso, Reembolso, CambioEstado, Asegurado, HistorialEstado,
+    CrearAsegurado, EditarAsegurado, CambioEstadoPoliza,
+)
 from services import (
     radicar_reembolso, consultar_reembolso, cambiar_estado, listar_reembolsos,
     listar_por_estado, historial_reembolso, listar_asegurados, buscar_asegurado,
+    crear_asegurado, editar_asegurado, cambiar_estado_poliza, eliminar_asegurado,
     extraer_datos_factura, reiniciar_datos,
 )
 from database import init_db, seed_db
@@ -40,6 +44,45 @@ def get_asegurado(documento: str):
     if not asegurado:
         raise HTTPException(status_code=404, detail="Asegurado no encontrado")
     return asegurado
+
+
+@app.post("/asegurados", response_model=Asegurado)
+def post_asegurado(datos: CrearAsegurado):
+    try:
+        return crear_asegurado(datos)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@app.put("/asegurados/{documento}", response_model=Asegurado)
+def put_asegurado(documento: str, datos: EditarAsegurado):
+    try:
+        return editar_asegurado(documento, datos)
+    except KeyError:
+        raise HTTPException(status_code=404, detail="Asegurado no encontrado")
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@app.patch("/asegurados/{documento}/estado", response_model=Asegurado)
+def patch_estado_poliza(documento: str, cambio: CambioEstadoPoliza):
+    try:
+        return cambiar_estado_poliza(documento, cambio.nuevo_estado, cambio.motivo)
+    except KeyError:
+        raise HTTPException(status_code=404, detail="Asegurado no encontrado")
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@app.delete("/asegurados/{documento}")
+def delete_asegurado(documento: str):
+    try:
+        eliminar_asegurado(documento)
+        return {"mensaje": f"Asegurado {documento} eliminado"}
+    except KeyError:
+        raise HTTPException(status_code=404, detail="Asegurado no encontrado")
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
 
 # === ESCANEO ===

@@ -279,6 +279,110 @@ RADICADO → EN_REVISION_DOCUMENTAL → EN_AUDITORIA_MEDICA → EN_VALIDACION_CO
 
 ---
 
+### Paso 16: Mejora visual de tabs y filtros de bandeja
+**Prompt:** "En la Bandeja de Gestión no se distingue bien en qué pestaña se encuentra el usuario, dale más claridad"
+
+**Resultado:**
+- Tab activo con borde inferior azul (#4361ee), fondo blanco y sombra — mayor contraste visual
+- Tabs inactivos transparentes con hover suave
+- Barra de tabs con fondo gris (#e2e4e8) que da contraste
+- Filtros de la bandeja de gestión ahora marcan cuál está seleccionado (fondo oscuro + borde azul)
+- Se agregó filtro "Pagados" que faltaba
+
+**Archivos modificados:** `static/index.html`
+
+---
+
+### Paso 17: CRUD de Asegurados con normativa colombiana
+**Prompt:** "Vamos a hacer el CRUD del asegurado, investiga en internet reglas, normativas para la gestión de asegurados"
+
+**Investigación:** Se investigaron normativas colombianas aplicables:
+- **Decreto 2555/2010** — Ciclo de vida de pólizas, períodos de carencia, reglas de retracto (10 días libres tras activación)
+- **Ley 1581/2012 (Habeas Data)** — Protección de datos personales, datos de salud son "sensibles", requiere consentimiento
+- **Circular Básica Jurídica Superfinanciera** — Transiciones de estado de póliza, plazos de respuesta, mora y suspensión
+- **Ley 1751/2015 (Estatutaria de Salud)** — Preexistencias cubiertas después de períodos de carencia
+
+**Resultado — CRUD completo con reglas de negocio:**
+
+**Nuevos campos del modelo `asegurados`:**
+| Campo | Tipo | Descripción |
+|---|---|---|
+| tipo_documento | VARCHAR(5) | CC, CE, TI, PP, NIT |
+| fecha_nacimiento | DATE | Edad del asegurado |
+| genero | VARCHAR(10) | F, M, O |
+| email | VARCHAR(200) | Contacto para notificaciones |
+| telefono | VARCHAR(20) | Contacto telefónico |
+| fecha_inicio_poliza | DATE | Inicio de vigencia |
+| fecha_fin_poliza | DATE | Fin de vigencia |
+| fecha_suspension | DATE | Cuándo fue suspendida |
+| periodo_carencia_dias | INTEGER | Días de espera antes de cobertura (default 30) |
+| preexistencias | TEXT | Condiciones preexistentes declaradas |
+| motivo_estado | TEXT | Razón del estado actual de la póliza |
+
+**Máquina de estados de póliza:**
+```
+PENDIENTE_ACTIVACION → ACTIVA → SUSPENDIDA → ACTIVA (reactivación)
+           ↓               ↓           ↓
+        CANCELADA       CANCELADA   CANCELADA
+```
+
+**Reglas de negocio implementadas:**
+1. Documento debe tener entre 6 y 12 caracteres, no duplicado
+2. Número de póliza no duplicado
+3. Copago validado entre 0% y 30% (rango colombiano)
+4. Estado inicial: ACTIVA si fecha_inicio <= hoy, sino PENDIENTE_ACTIVACION
+5. Suspender y cancelar requieren motivo obligatorio
+6. No se puede cancelar póliza si hay reembolsos en trámite (RADICADO, EN_REVISION, etc.)
+7. Reactivación después de 90 días suspendida resetea contadores (deducible y reembolsado)
+8. No se puede eliminar asegurado con reembolsos asociados
+9. No se puede bajar deducible_anual por debajo de deducible_consumido
+10. No se puede bajar tope_anual por debajo de reembolsado_anual
+11. Documento y tipo_documento no editables después de creación
+
+**Nuevos endpoints:**
+| Método | Ruta | Descripción |
+|---|---|---|
+| POST | `/asegurados` | Crear asegurado |
+| PUT | `/asegurados/{documento}` | Editar asegurado |
+| PATCH | `/asegurados/{documento}/estado` | Cambiar estado de póliza |
+| DELETE | `/asegurados/{documento}` | Eliminar asegurado |
+
+**Frontend — Tab Asegurados rediseñado:**
+- Panel izquierdo: formulario de crear/editar con campos agrupados (datos personales, póliza, financieros)
+- Panel derecho: tabla de asegurados con badges de estado de póliza y botones de acción
+- Acciones en tabla: Editar, Activar/Suspender/Cancelar (según transiciones permitidas), Eliminar (solo canceladas)
+- Modal de edición: pre-llena campos, deshabilita documento y póliza (no editables)
+- Prompts para motivo al suspender o cancelar
+
+**Migración de base de datos:**
+- `init_db()` ahora agrega columnas nuevas con `ALTER TABLE ADD COLUMN` si la tabla ya existía
+- Cada ALTER es una transacción independiente (commit/rollback) para no romper tablas existentes
+- Seed actualizado con datos completos (fechas de nacimiento, emails, teléfonos, fecha de póliza)
+
+**Archivos modificados:** `models.py`, `database.py`, `services.py`, `main.py`, `static/index.html`
+
+---
+
+### Paso 18: Navegación con sidebar lateral
+**Prompt:** "Vamos a separar en un menú lateral para que quede la opción para radicar un documento, y otra opción para Gestionar el asegurado y sacarlo de los tabs de Radicar documento"
+
+**Resultado:**
+- Se reemplazó el layout de tabs superiores por un **sidebar lateral fijo** (240px) con fondo oscuro
+- Sidebar organizado en 2 secciones:
+  - **Reembolsos**: Radicar, Gestionar, Consultar
+  - **Asegurados**: Gestionar
+- Item activo con borde azul lateral (`border-left: 3px solid #4361ee`) y fondo destacado
+- Botón "Reiniciar datos" movido al footer del sidebar
+- Se eliminó el header superior — el título y subtítulo viven en el sidebar
+- Cada sección es una página independiente (ya no son tabs con barra superior)
+- La lista de asegurados en "Radicar" se mantiene como referencia rápida para copiar el documento
+- El CRUD de asegurados vive separado en su propia sección "Gestionar Asegurados"
+- Responsive: en pantallas < 900px el sidebar se colapsa a iconos (56px)
+
+**Archivos modificados:** `static/index.html`
+
+---
+
 ## Estructura final del proyecto
 
 ```
@@ -293,7 +397,7 @@ Dojo/
     ├── .env                 # ANTHROPIC_API_KEY (no subir al repo)
     ├── .mcp.json            # Config MCP para PostgreSQL
     ├── database.py          # Conexión PostgreSQL + init_db + seed
-    ├── main.py              # App FastAPI — 11 endpoints
+    ├── main.py              # App FastAPI — 15 endpoints
     ├── models.py            # Modelos Pydantic con validadores
     ├── services.py          # Lógica de negocio + reglas + Claude Vision
     ├── requirements.txt     # Dependencias Python
@@ -308,6 +412,10 @@ Dojo/
 | GET | `/` | Sirve el frontend |
 | GET | `/asegurados` | Lista todos los asegurados |
 | GET | `/asegurados/{documento}` | Consulta un asegurado por cédula |
+| POST | `/asegurados` | Crear asegurado |
+| PUT | `/asegurados/{documento}` | Editar asegurado |
+| PATCH | `/asegurados/{documento}/estado` | Cambiar estado de póliza |
+| DELETE | `/asegurados/{documento}` | Eliminar asegurado |
 | POST | `/facturas/escanear` | Extrae datos de imagen con Claude Vision |
 | POST | `/reembolsos` | Radica solicitud de reembolso |
 | GET | `/reembolsos` | Lista reembolsos (filtro opcional por estado) |
